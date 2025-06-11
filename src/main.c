@@ -17,8 +17,7 @@ int main(int argc, char *argv[]) {
 
     printf("$ ");
     fgets(input, 100, stdin);
-    input[strlen(input) - 1] = ' ';
-    input[strlen(input)] = '\0';
+    input[strlen(input) - 1] = '\0';
 
     if (strcmp(input, "exit 0") == 0)
       break;
@@ -39,10 +38,10 @@ int main(int argc, char *argv[]) {
     bool is_type = false;
 
     char *command;
-    int c = 0;
+    int c = first_char;
 
-    for (c = first_char; input[c] != '\0'; c++) {
-      if (input[c] == ' ') {
+    for (;; c++) {
+      if (input[c] == ' ' || input[c] == '\0') {
         word[character] = '\0';
         command = word;
         break;
@@ -63,8 +62,8 @@ int main(int argc, char *argv[]) {
     }
 
     character = 0;
-    while (input[c] != '\0') {
-      if (input[c] == ' ') {
+    while (1) {
+      if (input[c] == ' ' || input[c] == '\0') {
 
         word[character] = '\0';
 
@@ -84,6 +83,8 @@ int main(int argc, char *argv[]) {
 
       } else
         word[character++] = input[c];
+      if (input[c] == '\0')
+        break;
       c++;
     }
 
