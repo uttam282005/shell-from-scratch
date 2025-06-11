@@ -90,8 +90,10 @@ int main(int argc, char *argv[]) {
     if (is_echo)
       printf("%s\n", "");
 
-    if (!is_valid_command)
+    if (!is_valid_command) {
+      input[strlen(input) - 1] = '\0';
       printf("%s: command not found\n", input);
+    }
   }
 
   return 0;
