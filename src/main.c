@@ -73,7 +73,8 @@ int main(int argc, char *argv[]) {
         }
 
         if (is_type) {
-          if (strcmp(word, "echo") == 0 || strcmp(word, "type") == 0)
+          if (strcmp(word, "echo") == 0 || strcmp(word, "type") == 0 ||
+              strcmp(word, "exit") == 0)
             printf("%s is a shell builtin\n", word);
           else
             printf("%s: not found\n", word);
