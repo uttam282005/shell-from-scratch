@@ -92,7 +92,6 @@ int main(int argc, char *argv[]) {
       printf("%s\n", "");
 
     if (!is_valid_command) {
-      input[strlen(input) - 1] = '\0';
       printf("%s: command not found\n", input);
     }
   }
