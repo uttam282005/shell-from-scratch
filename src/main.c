@@ -1,7 +1,70 @@
-#include "string.h"
+#include <dirent.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#define MAX_PATHS 15
+#define MAX_PATH_LEN 100
+
+bool is_command_exist(char *path, const char *command) {
+  DIR *dp;
+  struct dirent *entry;
+
+  if ((dp = opendir(path)) == NULL) {
+    return false;
+  }
+
+  while ((entry = readdir(dp)) != NULL) {
+    if (strcmp(entry->d_name, command) == 0) {
+      closedir(dp);
+      return true;
+    }
+  }
+
+  closedir(dp);
+  return false;
+}
+
+char *get_path(const char *command) {
+  if (command == NULL)
+    return NULL;
+
+  char *paths = getenv("PATH");
+
+  if (paths == NULL)
+    return NULL;
+
+  char *path_b = (char *)malloc(MAX_PATH_LEN);
+  char path[MAX_PATH_LEN];
+  char path_arr[MAX_PATHS][MAX_PATH_LEN];
+
+  int c = 0;
+  int path_c = 0;
+  int path_cnt = 0;
+
+  while (path_cnt < MAX_PATHS) {
+    if (paths[c] == ':' || paths[c] == '\0') {
+      path[path_c] = '\0';
+      strcpy(path_arr[path_cnt++], path);
+      path_c = 0;
+    } else
+      path[path_c++] = paths[c];
+    if (paths[c] == '\0')
+      break;
+    c++;
+  }
+
+  for (int cur_path = 0; cur_path < path_cnt; cur_path++) {
+    if (is_command_exist(path_arr[cur_path], command)) {
+      strcpy(path_b, path_arr[cur_path]);
+      return path_b;
+    }
+  }
+
+  return NULL;
+}
 
 int main(int argc, char *argv[]) {
   // Flush after every printf
@@ -32,13 +95,12 @@ int main(int argc, char *argv[]) {
 
     char word[100];
 
-    int character = 0;
-
     bool is_echo = false;
     bool is_type = false;
 
     char *command;
     int c = first_char;
+    int character = 0;
 
     for (;; c++) {
       if (input[c] == ' ' || input[c] == '\0') {
@@ -61,7 +123,12 @@ int main(int argc, char *argv[]) {
       is_valid_command = true;
     }
 
+    if (strcmp(command, "exit") == 0) {
+      break;
+    }
+
     character = 0;
+    char *path;
     while (1) {
       if (input[c] == ' ' || input[c] == '\0') {
 
@@ -75,8 +142,12 @@ int main(int argc, char *argv[]) {
           if (strcmp(word, "echo") == 0 || strcmp(word, "type") == 0 ||
               strcmp(word, "exit") == 0)
             printf("%s is a shell builtin\n", word);
-          else
+          else if ((path = get_path(word)) != NULL) {
+            printf("%s is %s/", word, path);
+            printf("%s\n", word);
+          } else {
             printf("%s: not found\n", word);
+          }
         }
 
         character = 0;
