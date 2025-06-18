@@ -1,14 +1,15 @@
 // executer.h
 
-#ifndef EXECUTRE_H
-#define EXECUTRE_H
+#ifndef EXECUTER_H
+#define EXECUTER_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <errno.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
-void execute(const char *program, char *args[]);
+void execute(char **args);
 
 #endif
