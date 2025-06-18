@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "_echo.h"
+#include "_pwd.h"
 #include "_type.h"
 #include "executer.h"
 #include "utils.h"
@@ -21,6 +22,9 @@ void handle_builtin(char **args, int count) {
     exit(0);
   if (strcmp(command, "type") == 0) {
     _type(args, count);
+  }
+  if (strcmp(command, "pwd") == 0) {
+    _pwd();
   }
 }
 

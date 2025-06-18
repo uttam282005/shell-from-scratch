@@ -1,7 +1,7 @@
 #include "_type.h"
 #include "utils.h"
 
-const char *builtin_commands[] = {"echo", "cd", "exit", "type", NULL};
+const char *builtin_commands[] = {"echo", "cd", "exit", "type", "pwd", NULL};
 
 bool is_builtin(char *command) {
   for (int i = 0; builtin_commands[i]; i++) {
