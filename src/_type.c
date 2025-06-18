@@ -59,7 +59,7 @@ void _type(char **args, int count) {
 
   for (int i = 1; i < count; i++) {
     if (is_builtin(args[i])) {
-      printf("%s is a shell builitn\n", args[i]);
+      printf("%s is a shell builtin\n", args[i]);
       continue;
     }
     if ((path = get_path(args[i])) != NULL) {
