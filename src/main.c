@@ -1,3 +1,4 @@
+#include "executer.h"
 #include <dirent.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -5,8 +6,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_PATHS 15
-#define MAX_PATH_LEN 100
+#define MAXIMUM_ALLOWED_PATHS 15
+#define MAXIMUM_PATH_LENGTH 100
+
+// TODO: Trim input of spaces
+// TODO: Refactor
 
 bool is_command_exist(char *path, const char *command) {
   DIR *dp;
@@ -36,15 +40,15 @@ char *get_path(const char *command) {
   if (paths == NULL)
     return NULL;
 
-  char *path_b = (char *)malloc(MAX_PATH_LEN);
-  char path[MAX_PATH_LEN];
-  char path_arr[MAX_PATHS][MAX_PATH_LEN];
+  char *path_b = (char *)malloc(MAXIMUM_PATH_LENGTH);
+  char path[MAXIMUM_PATH_LENGTH];
+  char path_arr[MAXIMUM_ALLOWED_PATHS][MAXIMUM_PATH_LENGTH];
 
   int c = 0;
   int path_c = 0;
   int path_cnt = 0;
 
-  while (path_cnt < MAX_PATHS) {
+  while (path_cnt < MAXIMUM_ALLOWED_PATHS) {
     if (paths[c] == ':' || paths[c] == '\0') {
       path[path_c] = '\0';
       strcpy(path_arr[path_cnt++], path);
