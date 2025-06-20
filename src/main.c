@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "_cd.h"
 #include "_echo.h"
 #include "_pwd.h"
 #include "_type.h"
@@ -17,14 +18,18 @@ void handle_builtin(char **args, int count) {
 
   if (strcmp(command, "echo") == 0) {
     _echo(args, count);
-  }
-  if (strcmp(command, "exit") == 0)
+  } else if (strcmp(command, "exit") == 0)
     exit(0);
-  if (strcmp(command, "type") == 0) {
+  else if (strcmp(command, "type") == 0) {
     _type(args, count);
-  }
-  if (strcmp(command, "pwd") == 0) {
+  } else if (strcmp(command, "pwd") == 0) {
     _pwd();
+  } else if (strcmp(command, "cd") == 0) {
+    if (count > 2) {
+      printf("Too many arguments.");
+      return;
+    }
+    _cd(args[1]);
   }
 }
 
