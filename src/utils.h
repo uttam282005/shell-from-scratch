@@ -16,6 +16,6 @@
   fprintf(stderr, "Memory allocation failed: %s\n", strerror(errno))
 
 bool is_whitespace_segment(const char *s);
-char **split_string(const char *string, char separater, int *count);
+char **tokenize(const char *string, char separater, int *count);
 
 #endif

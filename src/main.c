@@ -11,6 +11,7 @@
 #include "_pwd.h"
 #include "_type.h"
 #include "executer.h"
+#include "redirect.h"
 #include "utils.h"
 
 void handle_builtin(char **args, int count) {
@@ -26,7 +27,7 @@ void handle_builtin(char **args, int count) {
     _pwd();
   } else if (strcmp(command, "cd") == 0) {
     if (count > 2) {
-      printf("Too many arguments.");
+      printf("Too many arguments.\n");
       return;
     }
     _cd(args[1]);
@@ -52,7 +53,7 @@ int main() {
       input[len - 1] = '\0';
 
     int count = 0;
-    char **args = split_string(input, ' ', &count);
+    char **args = tokenize(input, ' ', &count);
     if (count == 0) {
       free(args);
       continue;
@@ -60,10 +61,20 @@ int main() {
 
     char *command = args[0];
 
+    int savedfd;
+    int oldfd;
+    int newfd = -1;
+
     if (is_builtin(command)) {
+      newfd = handle_redirect(args, &count, &savedfd, &oldfd);
       handle_builtin(args, count);
     } else {
-      execute(args);
+      execute(args, count);
+    }
+
+    if (newfd != -1) {
+      restore_default_fd(oldfd, savedfd);
+      close(newfd);
     }
 
     for (int i = 0; i < count; ++i)

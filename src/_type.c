@@ -42,7 +42,7 @@ char *get_path(const char *command) {
 
   int path_count = 0;
   char *path_b = malloc(MAXIMUM_PATH_LENGTH);
-  char **parsed_paths = split_string(paths, ':', &path_count);
+  char **parsed_paths = tokenize(paths, ':', &path_count);
 
   for (int cur_path = 0; cur_path < path_count; cur_path++) {
     if (command_found(parsed_paths[cur_path], command)) {

@@ -10,6 +10,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void execute(char **args);
+void execute(char **args, int count);
 
 #endif

@@ -9,7 +9,7 @@ bool is_whitespace_segment(const char *s) {
   return true;
 }
 
-char **split_string(const char *string, char separater, int *count) {
+char **tokenize(const char *string, char separater, int *count) {
   int initial_capacity = 100;
 
   char **parsed_args = malloc(initial_capacity * sizeof(char *));
