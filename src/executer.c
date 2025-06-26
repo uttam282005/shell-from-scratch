@@ -23,7 +23,6 @@ void execute(char **args, int count) {
       printf("%s: command not found\n", program);
 
     exit(EXIT_FAILURE);
-
   } else {
     int status;
     waitpid(pid, &status, 0);
