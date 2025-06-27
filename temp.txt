@@ -1,3 +1,0 @@
-type is a shell builtin
-cd is a shell builtin
-ls is /usr/bin/ls
