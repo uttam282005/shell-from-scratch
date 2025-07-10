@@ -1,3 +1,7 @@
+#ifndef CD 
+#define CD 
+
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,3 +9,5 @@
 #include <unistd.h>
 
 void _cd(char *path);
+
+#endif

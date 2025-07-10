@@ -24,8 +24,7 @@
 
 void handle_builtin(char **args, int count);
 
-char ***detect_pipe(char **args, int count, int *process) {
-  bool contains_pipe = false;
+char ***group(char **args, int count, int *process) {
   char ***cmds = malloc(sizeof(args) * 10);
 
   cmds[0] = args;
@@ -33,7 +32,6 @@ char ***detect_pipe(char **args, int count, int *process) {
   int i = 0;
   for (; i < count; i++) {
     if (args[i][0] == '|') {
-      contains_pipe = true;
       args[i] = NULL;
       if (i + 1 < count) {
         cmds[j++] = args + i + 1;
@@ -43,9 +41,8 @@ char ***detect_pipe(char **args, int count, int *process) {
 
   *process = j;
 
-  return contains_pipe ? cmds : NULL;
+  return cmds;
 }
-
 
 int _pipe(char ***cmds, int process) {
   int previn = -1;
@@ -79,7 +76,8 @@ int _pipe(char ***cmds, int process) {
       char **args = cmds[i];
       char *command = cmds[i][0];
       int count = 0;
-      for (char **temp = args; *temp; temp++) count++;
+      for (char **temp = args; *temp; temp++)
+        count++;
 
       int savedfd, oldfd;
       int newfd = -1;
@@ -101,7 +99,8 @@ int _pipe(char ***cmds, int process) {
       // In parent
       pids[i] = child;
 
-      if (previn != -1) close(previn);
+      if (previn != -1)
+        close(previn);
       if (i != process - 1) {
         close(fd[1]);
         previn = fd[0]; // Save the read end for next command
@@ -115,7 +114,6 @@ int _pipe(char ***cmds, int process) {
 
   return 1;
 }
-
 
 void handle_builtin(char **args, int count) {
   const char *command = args[0];
@@ -157,6 +155,11 @@ int main() {
 
     int count = 0;
     char **args = tokenize(input, ' ', &count);
+
+    if (strcmp(args[0], "exit") == 0) {
+      exit(0);
+    }
+
     if (count == 0) {
       free(args);
       continue;
@@ -164,30 +167,10 @@ int main() {
 
     int process;
     char ***cmds;
-    if ((cmds = detect_pipe(args, count, &process))) {
-      _pipe(cmds, process);
-      goto clean_up;
-    }
 
-    char *command = args[0];
+    cmds = group(args, count, &process);
+    _pipe(cmds, process);
 
-    int savedfd;
-    int oldfd;
-    int newfd = -1;
-
-    if (is_builtin(command)) {
-      newfd = handle_redirect(args, &count, &savedfd, &oldfd);
-      handle_builtin(args, count);
-    } else {
-      execute(args, count);
-    }
-
-    if (newfd != -1) {
-      restore_default_fd(oldfd, savedfd);
-      close(newfd);
-    }
-
-  clean_up:
     for (int i = 0; i < count; ++i)
       free(args[i]);
     free(args);
