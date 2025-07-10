@@ -24,6 +24,27 @@
 
 void handle_builtin(char **args, int count);
 
+bool handle_execute_in_main_process(char **args) {
+  char *command = args[0];
+
+  if (strcmp(command, "exit") == 0) {
+    exit(0);
+  }
+
+  if (strcmp(command, "cd") == 0) {
+    char *path = args[1];
+    _cd(path);
+    return true;
+  }
+
+  if (strcmp(command, "pwd") == 0) {
+    _pwd();
+    return true;
+  }
+
+  return false;
+}
+
 char ***group(char **args, int count, int *process) {
   char ***cmds = malloc(sizeof(args) * 10);
 
@@ -156,13 +177,13 @@ int main() {
     int count = 0;
     char **args = tokenize(input, ' ', &count);
 
-    if (strcmp(args[0], "exit") == 0) {
-      exit(0);
-    }
-
     if (count == 0) {
       free(args);
       continue;
+    }
+
+    if (handle_execute_in_main_process(args)) {
+      goto clean_up;
     }
 
     int process;
@@ -171,6 +192,7 @@ int main() {
     cmds = group(args, count, &process);
     _pipe(cmds, process);
 
+  clean_up:
     for (int i = 0; i < count; ++i)
       free(args[i]);
     free(args);
