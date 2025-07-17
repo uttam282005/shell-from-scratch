@@ -14,7 +14,7 @@
 #include "redirect.h"
 #include "utils.h"
 
-// pipe.c
+// TODO: refactor this
 #include "_type.h"
 #include "redirect.h"
 #include <stdio.h>
@@ -39,6 +39,7 @@ bool handle_execute_in_main_process(char **args) {
 
   if (strcmp(command, "pwd") == 0) {
     _pwd();
+
     return true;
   }
 
@@ -196,6 +197,8 @@ int main() {
     for (int i = 0; i < count; ++i)
       free(args[i]);
     free(args);
+
+    free(cmds);
   }
 
   return 0;
