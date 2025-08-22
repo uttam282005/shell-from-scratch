@@ -193,12 +193,11 @@ int main() {
     cmds = group(args, count, &process);
     _pipe(cmds, process);
 
+    free(cmds);
   clean_up:
     for (int i = 0; i < count; ++i)
       free(args[i]);
     free(args);
-
-    free(cmds);
   }
 
   return 0;
